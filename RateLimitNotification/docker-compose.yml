@@ -1,0 +1,28 @@
+version: "3.4"
+
+services:
+  # Your .NET application service
+  my-dotnet-app:
+    build:
+      context: .  # Replace with the path to your .NET application code
+      # dockerfile: Dockerfile
+    ports:
+      - "5001:80"  # Replace 80 with your application's port
+    depends_on:
+      - redis
+    environment:
+      # Define the environment variable
+      ConnectionStrings__Cache: redis
+      ASPNETCORE_ENVIRONMENT: Development
+
+  # Redis server
+  redis:
+    image: redis:7.2.5
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data  # Optional: Persist Redis data
+
+volumes:
+  # Optional: Persist Redis data
+  redis-data: {}

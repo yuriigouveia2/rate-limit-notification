@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RateLimitNotification.Api", "RateLimitNotification\RateLimitNotification.Api.csproj", "{83980142-821F-466E-A961-3D46D1830488}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RateLimitNotification.Domain", "RateLimitNotification.Domain\RateLimitNotification.Domain.csproj", "{803E8415-BED5-4B1E-875C-474FC92F6BCF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RateLimitNotification.Infra", "RateLimitNotification.Infra\RateLimitNotification.Infra.csproj", "{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Api", "1 - Api", "{077069BE-55F4-464E-9A1D-45EC37D96D23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Domain", "2 - Domain", "{4D4F88B4-4E2F-4B49-B381-3E686834C444}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infra", "3 - Infra", "{8C58CF18-19E3-42F1-8AD3-07A8055B8529}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RateLimitNotification.Infra.IoC", "RateLimitNotification.Infra.IoC\RateLimitNotification.Infra.IoC.csproj", "{94738A34-AEC1-4389-B49C-335CE0CF2C38}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{05D14CEC-C3F3-4BF4-ABEC-4C9B2B437FE1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83980142-821F-466E-A961-3D46D1830488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83980142-821F-466E-A961-3D46D1830488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83980142-821F-466E-A961-3D46D1830488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83980142-821F-466E-A961-3D46D1830488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803E8415-BED5-4B1E-875C-474FC92F6BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803E8415-BED5-4B1E-875C-474FC92F6BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803E8415-BED5-4B1E-875C-474FC92F6BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803E8415-BED5-4B1E-875C-474FC92F6BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94738A34-AEC1-4389-B49C-335CE0CF2C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94738A34-AEC1-4389-B49C-335CE0CF2C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94738A34-AEC1-4389-B49C-335CE0CF2C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94738A34-AEC1-4389-B49C-335CE0CF2C38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05D14CEC-C3F3-4BF4-ABEC-4C9B2B437FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05D14CEC-C3F3-4BF4-ABEC-4C9B2B437FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05D14CEC-C3F3-4BF4-ABEC-4C9B2B437FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05D14CEC-C3F3-4BF4-ABEC-4C9B2B437FE1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{83980142-821F-466E-A961-3D46D1830488} = {077069BE-55F4-464E-9A1D-45EC37D96D23}
+		{803E8415-BED5-4B1E-875C-474FC92F6BCF} = {4D4F88B4-4E2F-4B49-B381-3E686834C444}
+		{8E12D4BF-CCFF-4853-8DFD-F5000FE5F549} = {8C58CF18-19E3-42F1-8AD3-07A8055B8529}
+		{94738A34-AEC1-4389-B49C-335CE0CF2C38} = {8C58CF18-19E3-42F1-8AD3-07A8055B8529}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EEA6CEC6-6510-42E5-9618-E260940BA569}
+	EndGlobalSection
+EndGlobal
