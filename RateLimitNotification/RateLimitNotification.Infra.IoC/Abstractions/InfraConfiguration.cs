@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RateLimitNotification.Domain.Gateway.Interfaces;
-using RateLimitNotification.Domain.Gateway.Services;
-using RateLimitNotification.Domain.Notification.Interfaces;
-using RateLimitNotification.Domain.Notification.Services;
 using RateLimitNotification.Infra.RateLimit;
 using StackExchange.Redis;
 
@@ -17,7 +13,7 @@ namespace RateLimitNotification.Infra.IoC.Abstractions
         {
             InjectRepositories(services);
 
-            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration.GetConnectionString("Cache")));
         }
 
         #region Inject Repositories

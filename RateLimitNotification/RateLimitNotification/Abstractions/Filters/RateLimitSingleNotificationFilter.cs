@@ -27,9 +27,9 @@ namespace RateLimitNotification.Api.Abstractions.Filters
                 context.Result = new BadRequestObjectResult(new NotificationResponse
                 {
                     HasError = true,
-                    Message = string.Format("User {0} has reached to maximum number of notifications for Type {1}", notificationRequest.UserId, notificationRequest.NotificationType),
-                    UserId = notificationRequest.UserId,
-                    NotificationType = notificationRequest.NotificationType
+                    ResponseMessage = string.Format("User {0} has reached to maximum number of notifications for Type {1}", notificationRequest?.UserId, notificationRequest?.NotificationType),
+                    UserId = notificationRequest?.UserId,
+                    NotificationType = notificationRequest?.NotificationType
                 });
             }
         }

@@ -2,15 +2,15 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5000
+EXPOSE 5001
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["RateLimitNotification/RateLimitNotification.csproj", "RateLimitNotification/"]
 RUN dotnet restore "RateLimitNotification/RateLimitNotification.csproj"
 COPY . .
-WORKDIR "/src/RateLimitNotification"
+WORKDIR "src/RateLimitNotification"
 RUN dotnet build "RateLimitNotification.csproj" -c Release -o /app/build
 
 FROM build AS publish

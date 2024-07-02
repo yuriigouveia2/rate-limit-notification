@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RateLimitNotification.Api.Abstractions.Filters;
+using RateLimitNotification.Domain.Notification.Interfaces;
 using RateLimitNotification.Domain.Notification.Models.Request;
 using RateLimitNotification.Domain.Notification.Models.Response;
 using System.Net;
@@ -14,10 +15,12 @@ namespace RateLimitNotification.Api.Controllers
     public class NotificationsController : ControllerBase
     {
         private readonly ILogger<NotificationsController> _logger;
+        private readonly INotificationService _notificationService;
 
-        public NotificationsController(ILogger<NotificationsController> logger)
+        public NotificationsController(ILogger<NotificationsController> logger, INotificationService notificationService)
         {
             _logger = logger;
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -38,21 +41,30 @@ namespace RateLimitNotification.Api.Controllers
         /// </remarks>
         /// <response code="201">Returns the newly created notification</response>
         /// <response code="400">If an error is raised</response>
-        [RateLimitSingleNotificationFilterAttribute]
+        [RateLimitSingleNotificationFilter]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SendNotification(
             [FromBody] NotificationRequest notificationRequest)
         {
-            if (!TryValidateModel(notificationRequest))
-            {
-                return BadRequest(ModelState);
+            try
+            {            
+                _logger.LogInformation("Received single notification request");
+                if (!TryValidateModel(notificationRequest))
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var response = await _notificationService.Send(notificationRequest);
+
+                return StatusCode((int)HttpStatusCode.Created, response);
             }
-
-            await Task.Run(() => { });
-
-            return StatusCode((int)HttpStatusCode.Created, new NotificationResponse());
+            catch (Exception ex)
+            {
+                _logger.LogError("An exception was raised while handling the request");
+                return BadRequest(new NotificationResponse(notificationRequest.UserId, notificationRequest.NotificationType, ex.Message));
+            }
         }
 
         /// <summary>
@@ -80,16 +92,35 @@ namespace RateLimitNotification.Api.Controllers
         /// </remarks>
         /// <response code="201">Returns the newly created notification</response>
         /// <response code="400">If an error is raised</response>
+        [RateLimitMultipleNotificationsFilter]
         [HttpPost("multiple")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<NotificationResponse>>> SendNotification(
             [FromBody] ICollection<NotificationRequest> notificationsRequest)
         {
-            if (!TryValidateModel(notificationsRequest))
+            try
             {
-                return BadRequest(ModelState);
-            }
+                _logger.LogInformation("Received multiple notification request");
+                if (!TryValidateModel(notificationsRequest))
+                {
+                    return BadRequest(ModelState);
+                }
 
-            return StatusCode((int)HttpStatusCode.Created, new List<NotificationResponse>());
+                var response = await _notificationService.SendMultiple(notificationsRequest);
+
+                return StatusCode((int)HttpStatusCode.Created, response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An exception was raised while handling the request");
+                
+                return BadRequest(
+                    new List<NotificationResponse>(1) 
+                    { 
+                        new NotificationResponse(ex.Message) 
+                    });
+            }
         }
     }
 }

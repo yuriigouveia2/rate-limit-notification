@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using RateLimitNotification.Domain.RateLimit.Entities;
 using StackExchange.Redis;
 
 namespace RateLimitNotification.Infra.RateLimit
@@ -6,38 +7,27 @@ namespace RateLimitNotification.Infra.RateLimit
     public class RateLimitCacheRepository : IRateLimitCacheRepository
     {
         private readonly IDatabase _redis;
+        private readonly IServer _server;
 
         public RateLimitCacheRepository(IConnectionMultiplexer muxer)
         {
             _redis = muxer.GetDatabase();
-        }
-
-        public async Task<bool> ExistsOnCache(string userId, string notificationType)
-        {
-            var key = $"user_id:notification_type:{userId}:{notificationType}";
-            return await _redis.KeyExistsAsync(key); //TODO: refactor to check if this hash key has reached to the maximum
+            _server = muxer.GetServer(muxer.GetEndPoints().First());
         }
 
         public async Task<int> GetNotificationCount(string userId, string notificationType)
         {
-            var key = $"user_id:notification_type:{userId}:{notificationType}";
-            var notificationCount = await _redis.StringGetAsync(key);
+            var pattern = $"user_id:notification_type:timestamp:{userId}:{notificationType}*";
+            var notificationsKeys = await Task.Run(() => _server.Keys(database: _redis.Database, pattern: pattern).ToArray());
 
-            return notificationCount.HasValue ?
-                Convert.ToInt32(notificationCount) : 0;
+            return notificationsKeys.Length;
         }
 
-        public async Task<bool> SaveOrUpdateOnCache(Domain.RateLimit.Entities.RateLimit rateLimit)
+        public async Task<bool> SaveOnCache(Domain.RateLimit.Entities.RateLimit rateLimit)
         {
-            var key = $"user_id:{rateLimit.UserId}";
-            var notificationCount = await GetNotificationCount(rateLimit.UserId, rateLimit.NotificationType);
+            var key = $"user_id:notification_type:timestamp:{rateLimit.UserId}:{rateLimit.NotificationType}:{DateTime.Now.Ticks}";
 
-            if (notificationCount == 0)
-            {
-                return await _redis.StringSetAsync(key, value: 1, expiry: TimeSpan.FromSeconds(2000), When.Always);
-            }
-
-            return await _redis.StringSetAsync(key, value: notificationCount + 1, expiry: TimeSpan.FromSeconds(2000));
+            return await _redis.StringSetAsync(key, 1, expiry: rateLimit.Ttl);
         }
     }
 }
