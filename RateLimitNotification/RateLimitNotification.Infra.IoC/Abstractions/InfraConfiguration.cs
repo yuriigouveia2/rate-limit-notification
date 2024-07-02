@@ -5,6 +5,7 @@ using RateLimitNotification.Domain.Gateway.Services;
 using RateLimitNotification.Domain.Notification.Interfaces;
 using RateLimitNotification.Domain.Notification.Services;
 using RateLimitNotification.Infra.RateLimit;
+using StackExchange.Redis;
 
 namespace RateLimitNotification.Infra.IoC.Abstractions
 {
@@ -15,6 +16,8 @@ namespace RateLimitNotification.Infra.IoC.Abstractions
             IConfiguration configuration)
         {
             InjectRepositories(services);
+
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
         }
 
         #region Inject Repositories

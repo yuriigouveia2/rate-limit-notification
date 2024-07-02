@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using Newtonsoft.Json.Linq;
+using StackExchange.Redis;
 
 namespace RateLimitNotification.Infra.RateLimit
 {
@@ -6,34 +7,37 @@ namespace RateLimitNotification.Infra.RateLimit
     {
         private readonly IDatabase _redis;
 
-        public RateLimitCacheRepository(IDatabase redis)
+        public RateLimitCacheRepository(IConnectionMultiplexer muxer)
         {
-            _redis = redis;
+            _redis = muxer.GetDatabase();
         }
 
         public async Task<bool> ExistsOnCache(string userId, string notificationType)
         {
-            var key = $"user_id:{userId}";
-            var field = notificationType;
-            return await _redis.HashExistsAsync(key, field); //TODO: refactor to check if this hash key and hash video has reached to the maximum
+            var key = $"user_id:notification_type:{userId}:{notificationType}";
+            return await _redis.KeyExistsAsync(key); //TODO: refactor to check if this hash key has reached to the maximum
         }
 
         public async Task<int> GetNotificationCount(string userId, string notificationType)
         {
-            var key = $"user_id:{userId}";
-            var field = notificationType;
-            var notificationCount = await _redis.HashGetAsync(key, field);
+            var key = $"user_id:notification_type:{userId}:{notificationType}";
+            var notificationCount = await _redis.StringGetAsync(key);
 
             return notificationCount.HasValue ?
                 Convert.ToInt32(notificationCount) : 0;
         }
 
-        public async Task<long> SaveOrUpdateOnCache(Domain.RateLimit.Entities.RateLimit rateLimit)
+        public async Task<bool> SaveOrUpdateOnCache(Domain.RateLimit.Entities.RateLimit rateLimit)
         {
             var key = $"user_id:{rateLimit.UserId}";
-            var field = rateLimit.NotificationType;
+            var notificationCount = await GetNotificationCount(rateLimit.UserId, rateLimit.NotificationType);
 
-            return await _redis.HashIncrementAsync(key, field, value: 1, CommandFlags.None);
+            if (notificationCount == 0)
+            {
+                return await _redis.StringSetAsync(key, value: 1, expiry: TimeSpan.FromSeconds(2000), When.Always);
+            }
+
+            return await _redis.StringSetAsync(key, value: notificationCount + 1, expiry: TimeSpan.FromSeconds(2000));
         }
     }
 }

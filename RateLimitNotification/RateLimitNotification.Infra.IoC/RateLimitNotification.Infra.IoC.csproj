@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RateLimitNotification.Domain\RateLimitNotification.Domain.csproj" />
+    <ProjectReference Include="..\RateLimitNotification.Infra\RateLimitNotification.Infra.csproj" />
   </ItemGroup>
 
 </Project>

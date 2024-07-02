@@ -2,15 +2,30 @@
 
 namespace RateLimitNotification.Domain.Notification.Models.Request
 {
-    public record NotificationRequest
+    /// <summary>
+    /// A notification
+    /// </summary>
+    public class NotificationRequest
     {
-        [Required]
-        public string NotificationType { get; private set; }
+        /// <summary>
+        /// Notification Type
+        /// </summary>
+        /// <example>marketing</example>
+        [Required(ErrorMessage = "NotificationType is required")]
+        public string? NotificationType { get; set; }
 
-        [Required]
-        public string UserId { get; private set; }
+        /// <summary>
+        /// User identification
+        /// </summary>
+        /// <example>15</example>
+        [Required(ErrorMessage = "UserId is required")]
+        public string? UserId { get; set; }
 
-        [Required]
-        public string Message { get; private set; }
+        /// <summary>
+        /// Notification message
+        /// </summary>
+        /// <example>We have a new product which should be relevant to you.</example>
+        [Required(ErrorMessage = "Message is required")]
+        public string? Message { get; set; }
     }
 }

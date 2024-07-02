@@ -15,6 +15,7 @@
         public string? UserId { get; private set; }
         public string? Message { get; private set; }
         public DateTime CreatedAt { get; private set; }
+        public DateTime ExpiresAt { get; private set; }
 
     }
 }
